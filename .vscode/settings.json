@@ -1,0 +1,23 @@
+{
+  "cSpell.words": ["tmbd"],
+
+  // Desactivar sugerencias de IA de Cursor
+  "cursor.general.enableHints": false,
+  "cursor.cmdk.useThemedDiffBackground": false,
+
+  // Mantener IntelliSense de TypeScript/Angular activo
+  "typescript.suggest.enabled": true,
+  "typescript.suggest.autoImports": true,
+  "javascript.suggest.enabled": true,
+
+  // Configuración del editor para autocompletado estándar
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": "off",
+    "strings": "off"
+  },
+  "editor.suggestOnTriggerCharacters": true,
+  "editor.acceptSuggestionOnCommitCharacter": true,
+  "editor.wordBasedSuggestions": "matchingDocuments",
+  "editor.inlineSuggest.enabled": false
+}
