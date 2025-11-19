@@ -1,17 +1,11 @@
-import { Component, inject } from '@angular/core';
-import { MoviesService } from '../../movies.service';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { Component } from '@angular/core';
+
+import { Hero } from './components/hero/hero';
 
 @Component({
   selector: 'app-home-page',
-  imports: [],
+  imports: [Hero],
   templateUrl: './home-page.html',
   styles: ``,
 })
-export class HomePage {
-  movieService = inject(MoviesService);
-
-  trendingMoviesDay = rxResource({
-    stream: () => this.movieService.getTrendingMovies(),
-  });
-}
+export class HomePage {}
