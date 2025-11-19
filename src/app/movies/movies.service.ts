@@ -11,7 +11,6 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class MoviesService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
-  private readonly apikey = environment.apiKey;
 
   readonly trendingMoviesResource = rxResource({
     stream: () => this.getTrendingMovies(),
@@ -19,7 +18,7 @@ export class MoviesService {
 
   getTrendingMovies(): Observable<Movie[]> {
     return this.http
-      .get<MovieResponse>(`${this.apiUrl}/trending/movie/day?api_key=${this.apikey}`)
+      .get<MovieResponse>(`${this.apiUrl}/trending/movie/day`)
       .pipe(map((response) => response.results));
   }
 }
