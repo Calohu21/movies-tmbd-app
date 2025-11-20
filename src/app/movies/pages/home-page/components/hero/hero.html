@@ -1,5 +1,5 @@
 @if (trendingMoviesResource.hasValue()) {
-  @let movie = trendingMoviesResource.value()![2];
+  @let movie = trendingMoviesResource.value()![random()];
   <div
     class="relative w-full mx-4 mt-8 sm:w-11/12 sm:mx-auto sm:mt-10 lg:w-2/3 lg:mt-15 rounded-lg overflow-hidden shadow-2xl cursor-pointer group"
   >
@@ -33,13 +33,15 @@
             }}</span>
           </div>
         </div>
-        <div
-          (click)="getTrailer(movie.id)"
-          class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
-        >
-          <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-3xl"></i>
-          <span class="font-bold text-base sm:text-base lg:text-lg">Reproducir tráiler</span>
-        </div>
+        @if (hasTrailerKey()) {
+          <div
+            (click)="getTrailer(movie.id)"
+            class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
+          >
+            <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-3xl"></i>
+            <span class="font-bold text-base sm:text-base lg:text-lg">Reproducir tráiler</span>
+          </div>
+        }
       </div>
     </div>
   </div>
