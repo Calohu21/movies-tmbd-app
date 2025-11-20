@@ -2,3 +2,11 @@
 @plugin "daisyui" {
   themes: dark --default;
 }
+
+body {
+  font-family: "Red Hat Text", sans-serif;
+  font-weight: 300;
+}
+
+
+
