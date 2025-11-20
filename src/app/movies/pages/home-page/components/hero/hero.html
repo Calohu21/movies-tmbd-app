@@ -1,14 +1,44 @@
 @if (trendingMoviesResource.hasValue()) {
-  @let movie = trendingMoviesResource.value()![0];
-  <div class="hero bg-base-500 min-h-screen">
-    <div class="hero-content flex-col lg:flex-row">
+  @let movie = trendingMoviesResource.value()![2];
+  <div
+    class="relative w-full mx-4 mt-8 sm:w-11/12 sm:mx-auto sm:mt-10 lg:w-2/3 lg:mt-15 rounded-lg overflow-hidden shadow-2xl cursor-pointer group"
+  >
+    <div class="relative w-full h-full">
       <img
-        src="https://img.daisyui.com/images/stock/photo-1635805737707-575885ab0820.webp"
-        class="max-w-sm rounded-lg shadow-2xl"
+        src="https://image.tmdb.org/t/p/w1280{{ movie.backdrop_path }}"
+        alt="{{ movie.title }}"
+        class="object-cover w-full h-full transition-all duration-300 group-hover:brightness-90"
       />
-      <div>
-        <h1 class="text-5xl font-bold">{{ movie.title }}</h1>
-        <button class="btn btn-primary">Get Started</button>
+      <div
+        class="absolute bottom-0 left-0 right-0 h-5/6 bg-gradient-to-t from-black to-transparent"
+      ></div>
+    </div>
+    <div
+      class="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-4 lg:gap-6"
+    >
+      <div class="relative flex-shrink-0 group/poster transition-all duration-300 hover:scale-105">
+        <img
+          src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
+          class="w-24 sm:w-32 md:w-40 lg:w-48 xl:w-56 rounded-lg shadow-2xl transition-all duration-300 group-hover/poster:brightness-90"
+          alt="{{ movie.title }}"
+        />
+      </div>
+      <div class="flex flex-col justify-end gap-2 sm:gap-3 text-white pb-0 sm:pb-2 flex-1">
+        <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold drop-shadow-lg">{{ movie.title }}</h2>
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star text-yellow-500 text-sm sm:text-base"></i>
+            <span class="text-base sm:text-lg lg:text-xl font-semibold">{{
+              movie.vote_average.toFixed(1)
+            }}</span>
+          </div>
+        </div>
+        <div
+          class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
+        >
+          <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-3xl"></i>
+          <span class="font-bold text-base sm:text-base lg:text-lg">Reproducir tráiler</span>
+        </div>
       </div>
     </div>
   </div>
