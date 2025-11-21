@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { MoviesService } from '../../../../movies.service';
 import { Video } from '../../../../../core/models/video.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -11,28 +11,44 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class Hero {
   private readonly movieService = inject(MoviesService);
 
-  readonly trailerKey = signal<string | null>(null);
-  readonly loadingTrailer = signal<boolean>(false);
-  readonly hasTrailerKey = computed(() => this.trailerKey() !== null);
-
   readonly trendingMoviesResource = rxResource({
     stream: () => this.movieService.getTrendingMovies(),
   });
 
+  readonly trailerKey = signal<string | null>(null);
+  readonly loadingTrailer = signal<boolean>(false);
   readonly randomIndex = signal<number>(0);
 
   readonly currentMovie = computed(() => {
     const movies = this.trendingMoviesResource.value();
+    const index = this.randomIndex();
     if (!movies || movies.length === 0) return null;
-    return movies[this.randomIndex()];
+    const safeIndex = index % movies.length;
+    return movies[safeIndex];
   });
+
+  readonly hasTrailerKey = computed(() => this.trailerKey() !== null);
+  private initialized = false;
 
   constructor() {
     effect(() => {
+      const movies = this.trendingMoviesResource.value();
+
+      if (movies && movies.length > 0 && !this.initialized) {
+        this.initialized = true;
+        untracked(() => {
+          this.randomIndex.set(Math.floor(Math.random() * movies.length));
+        });
+      }
+    });
+
+    effect(() => {
       const movie = this.currentMovie();
-      this.selectRandomMovie();
+
       if (movie) {
-        this.loadTrailerForMovie(movie.id);
+        untracked(() => {
+          this.loadTrailerForMovie(movie.id);
+        });
       }
     });
   }
@@ -53,13 +69,6 @@ export class Hero {
         this.loadingTrailer.set(false);
       },
     });
-  }
-
-  selectRandomMovie(): void {
-    const movies = this.trendingMoviesResource.value();
-    if (movies && movies.length > 0) {
-      this.randomIndex.set(Math.floor(Math.random() * movies.length));
-    }
   }
 
   openTrailer(): void {

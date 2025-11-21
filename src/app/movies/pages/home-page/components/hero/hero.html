@@ -1,4 +1,4 @@
-@if (trendingMoviesResource.hasValue() && currentMovie()) {
+@if (trendingMoviesResource.hasValue() && currentMovie() && !loadingTrailer()) {
   @let movie = currentMovie()!;
   <div
     class="relative w-full mx-4 mt-8 sm:w-11/12 sm:mx-auto sm:mt-10 lg:w-2/3 lg:mt-15 rounded-lg overflow-hidden shadow-2xl cursor-pointer group"
@@ -23,7 +23,9 @@
           alt="{{ movie.title }}"
         />
       </div>
-      <div class="flex flex-col justify-end gap-2 sm:gap-3 text-white pb-0 sm:pb-2 flex-1">
+      <div
+        class="flex flex-col justify-end gap-2 sm:gap-3 text-white pb-0 sm:pb-2 flex-1 min-h-[90px]"
+      >
         <p class="text-xl sm:text-2xl lg:text-2xl font-bold drop-shadow-lg">{{ movie.title }}</p>
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-1">
@@ -33,20 +35,17 @@
             </span>
           </div>
         </div>
-        @if (loadingTrailer()) {
-          <div class="flex items-center gap-2 text-gray-400">
-            <i class="fa-solid fa-spinner fa-spin text-2xl"></i>
-            <span class="font-bold text-base">Cargando tráiler...</span>
-          </div>
-        } @else if (hasTrailerKey()) {
-          <div
-            (click)="openTrailer()"
-            class="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:text-yellow-500 origin-left hover:scale-105 w-fit"
-          >
-            <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-3xl"></i>
-            <span class="font-bold text-base sm:text-base lg:text-lg">Reproducir tráiler</span>
-          </div>
-        }
+        <div class="h-8 sm:h-9 lg:h-10">
+          @if (hasTrailerKey()) {
+            <div
+              (click)="openTrailer()"
+              class="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:text-yellow-500 origin-left hover:scale-105 w-fit"
+            >
+              <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-3xl"></i>
+              <span class="font-bold text-base sm:text-base lg:text-lg">Reproducir tráiler</span>
+            </div>
+          }
+        </div>
       </div>
     </div>
   </div>
