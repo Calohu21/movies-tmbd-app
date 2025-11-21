@@ -4,10 +4,11 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MoviesService } from '../../../../movies.service';
 import { MovieWithTrailer } from '../../../../../core/models/video.interface';
+import { MovieTrailer } from '../../../../../shared/components/movie-trailer/movie-trailer';
 
 @Component({
   selector: 'app-hero',
-  imports: [NgClass],
+  imports: [NgClass, MovieTrailer],
   templateUrl: './hero.html',
 })
 export class Hero implements OnDestroy {
@@ -65,21 +66,21 @@ export class Hero implements OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.stopAutoPlay();
   }
 
-  goToPrev(): void {
+  goToPrev() {
     this.currentIndex.set(this.prevIndex());
     this.resetAutoPlay();
   }
 
-  goToNext(): void {
+  goToNext() {
     this.currentIndex.set(this.nextIndex());
     this.resetAutoPlay();
   }
 
-  private startAutoPlay(): void {
+  private startAutoPlay() {
     if (!isPlatformBrowser(this.platformId)) return;
 
     this.autoPlayTimer = setInterval(() => {
@@ -89,34 +90,34 @@ export class Hero implements OnDestroy {
     }, this.AUTO_PLAY_INTERVAL);
   }
 
-  private stopAutoPlay(): void {
+  private stopAutoPlay() {
     if (this.autoPlayTimer) {
       clearInterval(this.autoPlayTimer);
       this.autoPlayTimer = null;
     }
   }
 
-  private resetAutoPlay(): void {
+  private resetAutoPlay() {
     this.stopAutoPlay();
     this.startAutoPlay();
   }
 
-  pauseAutoPlay(): void {
+  pauseAutoPlay() {
     this.isPaused.set(true);
   }
 
-  resumeAutoPlay(): void {
+  resumeAutoPlay() {
     this.isPaused.set(false);
   }
 
-  openTrailer(): void {
+  openTrailer() {
     if (this.hasTrailer()) {
       this.isOpenModal.set(true);
       this.pauseAutoPlay();
     }
   }
 
-  closeTrailer(): void {
+  closeTrailer() {
     this.isOpenModal.set(false);
     this.resumeAutoPlay();
   }

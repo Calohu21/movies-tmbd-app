@@ -105,25 +105,8 @@
   </div>
 }
 
-@if (isOpenModal() && safeTrailerUrl()) {
-  <div
-    class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4"
-    (click)="closeTrailer()"
-  >
-    <div class="relative w-full max-w-4xl aspect-video">
-      <button
-        class="absolute -top-12 right-0 btn btn-circle btn-ghost text-white"
-        (click)="closeTrailer()"
-      >
-        <i class="fa-solid fa-xmark text-2xl"></i>
-      </button>
-      <iframe
-        [src]="safeTrailerUrl()"
-        class="w-full h-full rounded-lg"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-      ></iframe>
-    </div>
-  </div>
-}
+<app-movie-trailer
+  [safeTrailerUrl]="safeTrailerUrl()"
+  [isOpenModal]="isOpenModal()"
+  (closeModal)="closeTrailer()"
+/>
