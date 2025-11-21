@@ -2,6 +2,7 @@ import { Component, computed, effect, inject, signal, untracked } from '@angular
 import { MoviesService } from '../../../../movies.service';
 import { Video } from '../../../../../core/models/video.interface';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-hero',
@@ -10,6 +11,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 })
 export class Hero {
   private readonly movieService = inject(MoviesService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   readonly trendingMoviesResource = rxResource({
     stream: () => this.movieService.getTrendingMovies(),
@@ -18,6 +20,7 @@ export class Hero {
   readonly trailerKey = signal<string | null>(null);
   readonly loadingTrailer = signal<boolean>(false);
   readonly randomIndex = signal<number>(0);
+  readonly isOpenModal = signal(false);
 
   readonly currentMovie = computed(() => {
     const movies = this.trendingMoviesResource.value();
@@ -60,6 +63,7 @@ export class Hero {
     this.movieService.getMovieVideos(movieId).subscribe({
       next: (videos: Video[]) => {
         const officialTrailer = this.findOfficialTrailer(videos);
+
         this.trailerKey.set(officialTrailer ? officialTrailer.key : null);
         this.loadingTrailer.set(false);
       },
@@ -69,13 +73,6 @@ export class Hero {
         this.loadingTrailer.set(false);
       },
     });
-  }
-
-  openTrailer(): void {
-    const key = this.trailerKey();
-    if (key) {
-      window.open(`https://www.youtube.com/watch?v=${key}`, '_blank');
-    }
   }
 
   private findOfficialTrailer(videos: Video[]): Video | undefined {
@@ -95,5 +92,26 @@ export class Hero {
     }
 
     return trailer;
+  }
+
+  readonly safeTrailerUrl = computed<SafeResourceUrl | null>(() => {
+    const key = this.trailerKey();
+    if (!key) return null;
+    const url = `https://www.youtube.com/embed/${key}?autoplay=1&rel=0&modestbranding=1`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  });
+
+  openTrailer() {
+    if (this.trailerKey()) {
+      this.isOpenModal.set(true);
+    }
+  }
+
+  closeTrailer() {
+    this.isOpenModal.set(false);
+  }
+
+  onModalContentClick(event: Event) {
+    event.stopPropagation();
   }
 }

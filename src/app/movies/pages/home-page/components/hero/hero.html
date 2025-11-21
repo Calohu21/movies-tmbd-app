@@ -39,7 +39,7 @@
           @if (hasTrailerKey()) {
             <div
               (click)="openTrailer()"
-              class="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:text-yellow-500 origin-left hover:scale-105 w-fit"
+              class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
             >
               <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-3xl"></i>
               <span class="font-bold text-base sm:text-base lg:text-lg">Reproducir tráiler</span>
@@ -49,6 +49,39 @@
       </div>
     </div>
   </div>
+  @if (isOpenModal()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fadeIn"
+      (click)="closeTrailer()"
+    >
+      <div
+        class="relative w-full max-w-5xl mx-4 aspect-video bg-black rounded-lg overflow-hidden shadow-2xl"
+        (click)="onModalContentClick($event)"
+      >
+        <!-- Botón de cerrar -->
+        <button
+          class="absolute top-4 right-4 z-10 w-10 h-10 flex items-center justify-center bg-black/50 hover:bg-black/70 text-white rounded-full transition-all duration-300 hover:scale-110"
+          (click)="closeTrailer()"
+          aria-label="Cerrar trailer"
+        >
+          <i class="fa-solid fa-xmark text-2xl"></i>
+        </button>
+
+        <!-- iframe de YouTube -->
+        @if (safeTrailerUrl()) {
+          <iframe
+            [src]="safeTrailerUrl()"
+            class="w-full h-full"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            title="Movie Trailer"
+          >
+          </iframe>
+        }
+      </div>
+    </div>
+  }
 } @else if (trendingMoviesResource.isLoading()) {
   <div class="loading">Cargando películas...</div>
 } @else if (trendingMoviesResource.error()) {
