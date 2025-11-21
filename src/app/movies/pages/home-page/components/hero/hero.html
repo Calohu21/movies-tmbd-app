@@ -23,16 +23,16 @@
     (mouseenter)="pauseAutoPlay()"
     (mouseleave)="resumeAutoPlay()"
   >
-    <div class="carousel w-full rounded-lg overflow-hidden shadow-2xl">
+    <div class="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl">
       @for (item of movies(); track item.movie.id; let i = $index) {
         <div
-          class="carousel-item relative w-full transition-opacity duration-500"
+          class="absolute inset-0 w-full transition-transform duration-700 ease-in-out"
           [ngClass]="{
             block: i === currentIndex(),
             hidden: i !== currentIndex(),
           }"
         >
-          <div class="relative w-full aspect-video">
+          <div class="relative w-full h-full">
             <img
               src="https://image.tmdb.org/t/p/w1280{{ item.movie.backdrop_path }}"
               alt="{{ item.movie.title }}"
@@ -73,9 +73,9 @@
                     class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
                   >
                     <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-2xl"></i>
-                    <span class="font-bold text-base sm:text-base lg:text-lg"
-                      >Reproducir tráiler</span
-                    >
+                    <span class="font-bold text-base sm:text-base lg:text-lg">
+                      Reproducir tráiler
+                    </span>
                   </div>
                 }
               </div>
@@ -85,7 +85,7 @@
       }
     </div>
     <div
-      class="absolute left-2 right-2 top-1/4 flex -translate-y-1/2 transform justify-between pointer-events-none z-10"
+      class="absolute left-2 right-2 top-1/4 flex -translate-y-1/2 transform justify-between pointer-events-none z-20"
     >
       <button
         (click)="goToPrev()"
