@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { MoviesService } from '../../../../movies.service';
 import { Video } from '../../../../../core/models/video.interface';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-hero',
@@ -9,38 +10,81 @@ import { Video } from '../../../../../core/models/video.interface';
 })
 export class Hero {
   private readonly movieService = inject(MoviesService);
-  private readonly trailerKey = signal<string | null>(null);
+
+  readonly trailerKey = signal<string | null>(null);
+  readonly loadingTrailer = signal<boolean>(false);
   readonly hasTrailerKey = computed(() => this.trailerKey() !== null);
-  readonly trendingMoviesResource = this.movieService.trendingMoviesResource;
-  readonly random = signal(0);
+
+  readonly trendingMoviesResource = rxResource({
+    stream: () => this.movieService.getTrendingMovies(),
+  });
+
+  readonly randomIndex = signal<number>(0);
+
+  readonly currentMovie = computed(() => {
+    const movies = this.trendingMoviesResource.value();
+    if (!movies || movies.length === 0) return null;
+    return movies[this.randomIndex()];
+  });
+
   constructor() {
     effect(() => {
-      this.random.set(Math.floor(Math.random() * 20));
+      const movie = this.currentMovie();
+      this.selectRandomMovie();
+      if (movie) {
+        this.loadTrailerForMovie(movie.id);
+      }
     });
   }
 
-  getTrailer(movieId: number) {
+  private loadTrailerForMovie(movieId: number) {
+    this.trailerKey.set(null);
+    this.loadingTrailer.set(true);
+
     this.movieService.getMovieVideos(movieId).subscribe({
       next: (videos: Video[]) => {
-        const oficialTrailer = this.findOfficialTrailer(videos);
-        if (oficialTrailer) {
-          this.trailerKey.set(oficialTrailer.key);
-        } else {
-          this.trailerKey.set(null);
-        }
+        const officialTrailer = this.findOfficialTrailer(videos);
+        this.trailerKey.set(officialTrailer ? officialTrailer.key : null);
+        this.loadingTrailer.set(false);
       },
-      error: (err) => console.error('ERROR al obtener videos:', err),
+      error: (err) => {
+        console.error('ERROR al obtener videos:', err);
+        this.trailerKey.set(null);
+        this.loadingTrailer.set(false);
+      },
     });
   }
 
-  findOfficialTrailer(videos: Video[]): Video | undefined {
-    let trailer = videos.find((v) => v.type === 'Trailer' && v.official && v.site === 'YouTube');
+  selectRandomMovie(): void {
+    const movies = this.trendingMoviesResource.value();
+    if (movies && movies.length > 0) {
+      this.randomIndex.set(Math.floor(Math.random() * movies.length));
+    }
+  }
+
+  openTrailer(): void {
+    const key = this.trailerKey();
+    if (key) {
+      window.open(`https://www.youtube.com/watch?v=${key}`, '_blank');
+    }
+  }
+
+  private findOfficialTrailer(videos: Video[]): Video | undefined {
+    let trailer = videos.find(
+      (v) => v.type === 'Trailer' && v.official && v.site === 'YouTube' && v.iso_639_1 === 'es',
+    );
+
+    if (!trailer) {
+      trailer = videos.find((v) => v.type === 'Trailer' && v.official && v.site === 'YouTube');
+    }
     if (!trailer) {
       trailer = videos.find((v) => v.type === 'Trailer' && v.site === 'YouTube');
     }
+
     if (!trailer) {
       trailer = videos.find((v) => v.type === 'Teaser' && v.official && v.site === 'YouTube');
     }
+
     return trailer;
   }
 }

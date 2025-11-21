@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../environments/environment';
 import { map, Observable } from 'rxjs';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { Movie, MovieResponse } from '../core/models/movie.interface';
 import { Video, VideoResponse } from '../core/models/video.interface';
 
@@ -13,10 +12,6 @@ import { Video, VideoResponse } from '../core/models/video.interface';
 export class MoviesService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
-
-  readonly trendingMoviesResource = rxResource({
-    stream: () => this.getTrendingMovies(),
-  });
 
   getTrendingMovies(): Observable<Movie[]> {
     return this.http
