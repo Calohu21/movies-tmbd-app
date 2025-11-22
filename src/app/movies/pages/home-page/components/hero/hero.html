@@ -19,18 +19,29 @@
   </div>
 } @else if (movies().length > 0) {
   <div
-    class="relative mx-4 mt-8 sm:w-11/12 sm:ml-4 sm:mr-auto sm:mt-10 lg:w-5/8 lg:ml-15 lg:mt-15 cursor-pointer group hover:brightness-95"
+    class="relative mx-8 mt-10 sm:w-11/12 sm:ml-8 sm:mr-auto sm:mt-12 lg:w-7/12 lg:ml-16 lg:mt-16 xl:w-3/5 2xl:w-1/2 cursor-pointer group hover:brightness-95"
     (mouseenter)="pauseAutoPlay()"
     (mouseleave)="resumeAutoPlay()"
   >
     <div class="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl">
       @for (item of movies(); track item.movie.id; let i = $index) {
+        @let isCurrent = i === currentIndex();
+        @let isPrevious = i === previousIndex();
+        @let isNext = slideDirection() === 'next';
         <div
-          class="absolute inset-0 w-full transition-transform duration-700 ease-in-out"
-          [ngClass]="{
-            block: i === currentIndex(),
-            hidden: i !== currentIndex(),
-          }"
+          class="absolute inset-0 w-full transition-transform duration-500 ease-in-out"
+          [style.transform]="
+            isCurrent
+              ? 'translateX(0)'
+              : isPrevious
+                ? isNext
+                  ? 'translateX(-100%)'
+                  : 'translateX(100%)'
+                : isNext
+                  ? 'translateX(100%)'
+                  : 'translateX(-100%)'
+          "
+          [style.z-index]="isCurrent ? 20 : isPrevious ? 10 : 0"
         >
           <div class="relative w-full h-full">
             <img
@@ -39,41 +50,41 @@
               class="object-cover w-full h-full"
             />
             <div
-              class="absolute bottom-0 left-0 right-0 h-5/6 bg-gradient-to-t from-black to-transparent"
+              class="absolute bottom-0 left-0 right-0 h-3/4 bg-linear-to-t from-black to-transparent"
             ></div>
           </div>
           <div
-            class="absolute bottom-2 left-2 right-2 sm:bottom-4 sm:left-4 sm:right-4 flex flex-col sm:flex-row items-start sm:items-end gap-3 sm:gap-4 lg:gap-6"
+            class="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 flex flex-col sm:flex-row items-start sm:items-end gap-2 sm:gap-3 lg:gap-4"
           >
             <div
-              class="relative flex-shrink-0 transition-all duration-300 hover:scale-105 hover:brightness-90"
+              class="relative shrink-0 transition-all duration-300 hover:scale-105 hover:brightness-90"
             >
               <img
                 src="https://image.tmdb.org/t/p/w500{{ item.movie.poster_path }}"
-                class="w-24 sm:w-32 md:w-40 lg:w-48 xl:w-56 rounded-lg shadow-2xl"
+                class="w-20 sm:w-24 md:w-28 lg:w-36 xl:w-44 rounded-lg shadow-2xl"
                 alt="{{ item.movie.title }}"
               />
             </div>
             <div class="flex flex-col justify-end gap-2 sm:gap-3 text-white pb-0 sm:pb-2 flex-1">
-              <p class="text-xl sm:text-2xl lg:text-2xl font-bold drop-shadow-lg">
+              <p class="text-xl sm:text-2xl lg:text-3xl font-bold drop-shadow-lg">
                 {{ item.movie.title }}
               </p>
               <div class="flex items-center gap-2">
                 <div class="flex items-center gap-1">
-                  <i class="fa-solid fa-star text-yellow-500 text-sm sm:text-base"></i>
+                  <i class="fa-solid fa-star text-yellow-500 text-sm sm:text-base lg:text-lg"></i>
                   <span class="text-base sm:text-lg lg:text-xl font-semibold">
                     {{ item.movie.vote_average.toFixed(1) }}
                   </span>
                 </div>
               </div>
-              <div class="h-8 sm:h-9 lg:h-10">
+              <div class="h-9 sm:h-10 lg:h-12">
                 @if (item.trailerKey) {
                   <div
                     (click)="openTrailer()"
                     class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
                   >
-                    <i class="fa-regular fa-circle-play text-2xl sm:text-2xl lg:text-2xl"></i>
-                    <span class="font-bold text-base sm:text-base lg:text-lg">
+                    <i class="fa-regular fa-circle-play text-2xl sm:text-3xl lg:text-4xl"></i>
+                    <span class="font-bold text-base sm:text-lg lg:text-xl">
                       Reproducir tráiler
                     </span>
                   </div>
@@ -85,18 +96,20 @@
       }
     </div>
     <div
-      class="absolute left-2 right-2 top-1/4 flex -translate-y-1/2 transform justify-between pointer-events-none z-20"
+      class="absolute left-2 right-2 top-2/6 flex -translate-y-1/2 transform justify-between pointer-events-none z-20"
     >
       <button
         (click)="goToPrev()"
-        class="btn btn-circle bg-neutral/20 border-none text-white/70 hover:bg-neutral hover:text-white pointer-events-auto shadow-lg transition-all duration-300"
+        [disabled]="isTransitioning()"
+        class="btn btn-circle bg-neutral/20 border-none text-white/70 hover:bg-neutral hover:text-white pointer-events-auto shadow-lg transition-all duration-300 disabled:opacity-50"
         aria-label="Anterior"
       >
         <i class="fa-solid fa-chevron-left"></i>
       </button>
       <button
         (click)="goToNext()"
-        class="btn btn-circle bg-neutral/20 border-none text-white/70 hover:bg-neutral hover:text-white pointer-events-auto shadow-lg transition-all duration-300"
+        [disabled]="isTransitioning()"
+        class="btn btn-circle bg-neutral/20 border-none text-white/70 hover:bg-neutral hover:text-white pointer-events-auto shadow-lg transition-all duration-300 disabled:opacity-50"
         aria-label="Siguiente"
       >
         <i class="fa-solid fa-chevron-right"></i>
