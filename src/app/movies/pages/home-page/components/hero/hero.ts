@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, OnDestroy, effect, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser, NgClass } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MoviesService } from '../../../../movies.service';
@@ -8,7 +8,7 @@ import { MovieTrailer } from '../../../../../shared/components/movie-trailer/mov
 
 @Component({
   selector: 'app-hero',
-  imports: [NgClass, MovieTrailer],
+  imports: [MovieTrailer],
   templateUrl: './hero.html',
 })
 export class Hero implements OnDestroy {
@@ -22,6 +22,9 @@ export class Hero implements OnDestroy {
   private readonly hasTrailer = computed<boolean>(() => this.currentTrailerKey() !== null);
   private readonly totalMovies = computed<number>(() => this.movies().length);
   readonly currentIndex = signal<number>(0);
+  readonly previousIndex = signal<number>(-1);
+  readonly slideDirection = signal<'next' | 'prev'>('next');
+  readonly isTransitioning = signal<boolean>(false);
   readonly isOpenModal = signal<boolean>(false);
   readonly movies = computed<MovieWithTrailer[]>(() => this.heroDataResource.value() ?? []);
 
@@ -71,13 +74,31 @@ export class Hero implements OnDestroy {
   }
 
   goToPrev() {
+    if (this.isTransitioning()) return;
+
+    this.isTransitioning.set(true);
+    this.previousIndex.set(this.currentIndex());
+    this.slideDirection.set('prev');
     this.currentIndex.set(this.prevIndex());
     this.resetAutoPlay();
+
+    setTimeout(() => {
+      this.isTransitioning.set(false);
+    }, 500);
   }
 
   goToNext() {
+    if (this.isTransitioning()) return;
+
+    this.isTransitioning.set(true);
+    this.previousIndex.set(this.currentIndex());
+    this.slideDirection.set('next');
     this.currentIndex.set(this.nextIndex());
     this.resetAutoPlay();
+
+    setTimeout(() => {
+      this.isTransitioning.set(false);
+    }, 500);
   }
 
   private startAutoPlay() {
