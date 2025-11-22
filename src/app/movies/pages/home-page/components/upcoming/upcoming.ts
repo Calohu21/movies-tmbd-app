@@ -7,6 +7,16 @@ import { DatePipe } from '@angular/common';
   selector: 'app-upcoming',
   imports: [DatePipe],
   templateUrl: './upcoming.html',
+  styles: `
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+  `,
 })
 export class Upcoming {
   movieService = inject(MoviesService);
