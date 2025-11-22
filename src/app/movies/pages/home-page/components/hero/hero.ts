@@ -4,7 +4,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MoviesService } from '../../../../movies.service';
 import { MovieWithTrailer } from '../../../../../core/models/video.interface';
-import { MovieTrailer } from '../../../../../shared/components/movie-trailer/movie-trailer';
+import { MovieTrailer } from '../movie-trailer/movie-trailer';
 
 @Component({
   selector: 'app-hero',
