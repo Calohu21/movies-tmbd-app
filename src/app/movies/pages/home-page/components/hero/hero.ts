@@ -7,6 +7,7 @@ import {
   PLATFORM_ID,
   untracked,
   DestroyRef,
+  OnDestroy,
 } from '@angular/core';
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -20,7 +21,7 @@ import { MovieTrailer } from '../movie-trailer/movie-trailer';
   imports: [MovieTrailer, NgOptimizedImage],
   templateUrl: './hero.html',
 })
-export class Hero {
+export class Hero implements OnDestroy {
   private readonly movieService = inject(MoviesService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly platformId = inject(PLATFORM_ID);
@@ -30,6 +31,8 @@ export class Hero {
   private readonly isPaused = signal<boolean>(false);
   private readonly hasTrailer = computed<boolean>(() => this.currentTrailerKey() !== null);
   private readonly totalMovies = computed<number>(() => this.movies().length);
+  private transitionTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   readonly currentIndex = signal<number>(0);
   readonly previousIndex = signal<number>(-1);
   readonly slideDirection = signal<'next' | 'prev'>('next');
@@ -95,7 +98,11 @@ export class Hero {
     this.currentIndex.set(this.prevIndex());
     this.resetAutoPlay();
 
-    setTimeout(() => {
+    if (this.transitionTimeoutId) {
+      clearTimeout(this.transitionTimeoutId);
+    }
+
+    this.transitionTimeoutId = setTimeout(() => {
       this.isTransitioning.set(false);
     }, 500);
   }
@@ -112,6 +119,13 @@ export class Hero {
     setTimeout(() => {
       this.isTransitioning.set(false);
     }, 500);
+  }
+
+  ngOnDestroy() {
+    this.stopAutoPlay();
+    if (this.transitionTimeoutId) {
+      clearTimeout(this.transitionTimeoutId);
+    }
   }
 
   private startAutoPlay() {
