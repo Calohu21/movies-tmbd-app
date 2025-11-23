@@ -1,21 +1,27 @@
-<div class="bg-neutral-950 rounded-lg p-4 h-full flex flex-col overflow-hidden">
-  <span class="text-xl text-yellow-500 font-bold shrink-0">Próximamente</span>
+<div class="bg-neutral-950 rounded-lg p-2 sm:p-3 lg:p-4 h-full flex flex-col overflow-hidden">
+  <span class="text-base sm:text-lg lg:text-xl text-yellow-500 font-bold shrink-0"
+    >Próximamente</span
+  >
 
-  <div class="mt-4 flex-1 overflow-y-auto space-y-4 hide-scrollbar">
+  <div
+    class="mt-2 sm:mt-3 lg:mt-4 flex-1 overflow-y-auto space-y-2 sm:space-y-3 lg:space-y-4 scrollbar-hide"
+  >
     @for (movie of movies$.value(); track movie.id) {
-      <div class="flex flex-row gap-5 group">
+      <div class="flex flex-row gap-2 sm:gap-3 lg:gap-5 group">
         <img
           src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
           class="w-2 sm:w-4 md:w-8 lg:w-16 xl:w-22 rounded-lg shadow-2xl shrink-0"
           alt="{{ movie.title }}"
         />
-        <div class="flex flex-col justify-end gap-2 sm:gap-3 text-white pb-0 sm:pb-2 flex-1">
+        <div
+          class="flex flex-col justify-end gap-1 sm:gap-2 lg:gap-3 text-white pb-0 sm:pb-2 flex-1"
+        >
           <div
             class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
           >
-            <i class="fa-regular fa-circle-play sm:text-l lg:text-3xl"></i>
+            <i class="fa-regular fa-circle-play text-sm sm:text-base lg:text-3xl"></i>
           </div>
-          <span class="text-l">{{ movie.title }}</span>
+          <span class="text-sm sm:text-base lg:text-lg">{{ movie.title }}</span>
           <p class="text-xs font-extralight">{{ movie.release_date | date: 'd/M/y' }}</p>
         </div>
       </div>

@@ -8,12 +8,12 @@ import { DatePipe } from '@angular/common';
   imports: [DatePipe],
   templateUrl: './upcoming.html',
   styles: `
-    .hide-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    .scrollbar-hide {
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
 
-    .hide-scrollbar::-webkit-scrollbar {
+    .scrollbar-hide::-webkit-scrollbar {
       display: none;
     }
   `,
