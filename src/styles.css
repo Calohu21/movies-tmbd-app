@@ -1,11 +1,12 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-  themes: dark --default;
+  themes:  --default;
 }
 
 body {
   font-family: "Red Hat Text", sans-serif;
   font-weight: 500;
+  background-color: #121212;
 }
 
 
