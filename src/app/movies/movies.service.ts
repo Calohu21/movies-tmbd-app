@@ -61,9 +61,8 @@ export class MoviesService {
   }
 
   getUpcomingMovies(): Observable<Movie[]> {
-    return this.http.get<MovieResponse>(`${this.apiUrl}/movie/upcoming`).pipe(
-      map((response) => response.results),
-      tap((movies) => console.log({ movies })),
-    );
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/upcoming`)
+      .pipe(map((response) => response.results));
   }
 }

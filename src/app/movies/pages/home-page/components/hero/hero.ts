@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, OnDestroy, effect, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MoviesService } from '../../../../movies.service';
@@ -8,7 +8,7 @@ import { MovieTrailer } from '../movie-trailer/movie-trailer';
 
 @Component({
   selector: 'app-hero',
-  imports: [MovieTrailer],
+  imports: [MovieTrailer, NgOptimizedImage],
   templateUrl: './hero.html',
 })
 export class Hero implements OnDestroy {
@@ -26,9 +26,9 @@ export class Hero implements OnDestroy {
   readonly slideDirection = signal<'next' | 'prev'>('next');
   readonly isTransitioning = signal<boolean>(false);
   readonly isOpenModal = signal<boolean>(false);
-  readonly movies = computed<MovieWithTrailer[]>(() => this.heroDataResource.value() ?? []);
+  readonly movies = computed<MovieWithTrailer[]>(() => this.heroDataResource$.value() ?? []);
 
-  readonly heroDataResource = rxResource({
+  readonly heroDataResource$ = rxResource({
     stream: () => this.movieService.getTrendingMovieWithTrailer(),
   });
 

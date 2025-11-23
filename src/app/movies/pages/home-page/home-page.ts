@@ -4,7 +4,7 @@ import { Hero } from './components/hero/hero';
 
 @Component({
   selector: 'app-home-page',
-  imports: [Hero],
+  imports: [],
   templateUrl: './home-page.html',
   styles: ``,
 })

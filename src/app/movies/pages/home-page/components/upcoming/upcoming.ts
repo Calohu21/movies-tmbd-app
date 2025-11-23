@@ -19,7 +19,7 @@ import { DatePipe } from '@angular/common';
   `,
 })
 export class Upcoming {
-  movieService = inject(MoviesService);
+  private movieService = inject(MoviesService);
 
   movies$ = rxResource({
     stream: () => this.movieService.getUpcomingMovies(),
