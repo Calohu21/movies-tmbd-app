@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { MoviesService } from '../../../../movies.service';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-upcoming',
-  imports: [DatePipe],
+  imports: [DatePipe, NgOptimizedImage],
   templateUrl: './upcoming.html',
   styles: `
     .scrollbar-hide {
