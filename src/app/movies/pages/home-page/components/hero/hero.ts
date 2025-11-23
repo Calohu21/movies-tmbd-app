@@ -1,4 +1,13 @@
-import { Component, computed, inject, signal, OnDestroy, effect, PLATFORM_ID } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  effect,
+  PLATFORM_ID,
+  untracked,
+  DestroyRef,
+} from '@angular/core';
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -11,7 +20,7 @@ import { MovieTrailer } from '../movie-trailer/movie-trailer';
   imports: [MovieTrailer, NgOptimizedImage],
   templateUrl: './hero.html',
 })
-export class Hero implements OnDestroy {
+export class Hero {
   private readonly movieService = inject(MoviesService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly platformId = inject(PLATFORM_ID);
@@ -61,16 +70,20 @@ export class Hero implements OnDestroy {
   });
 
   constructor() {
+    const destroyRef = inject(DestroyRef);
+
     effect(() => {
       const movies = this.movies();
       if (movies.length > 0 && !this.autoPlayTimer) {
-        this.startAutoPlay();
+        untracked(() => {
+          if (!this.isPaused()) this.startAutoPlay();
+        });
       }
     });
-  }
 
-  ngOnDestroy() {
-    this.stopAutoPlay();
+    destroyRef.onDestroy(() => {
+      this.stopAutoPlay();
+    });
   }
 
   goToPrev() {

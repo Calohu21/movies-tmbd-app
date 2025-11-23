@@ -9,7 +9,7 @@
     <div
       class="mt-2 sm:mt-3 lg:mt-4 flex-1 overflow-y-auto space-y-2 sm:space-y-3 lg:space-y-4 scrollbar-hide"
     >
-      @for (movie of movies$.value(); track movie.id; let i = $index) {
+      @for (movie of movies$.value() ?? []; track movie.id; let i = $index) {
         <div class="flex flex-row gap-2 sm:gap-3 lg:gap-4 group cursor-pointer">
           <div
             class="relative w-8 sm:w-12 md:w-16 lg:w-20 xl:w-24 aspect-[2/3] rounded-lg shadow-2xl shrink-0 overflow-hidden"
