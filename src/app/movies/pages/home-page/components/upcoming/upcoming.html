@@ -2,24 +2,30 @@
   <div
     class="absolute inset-0 bg-neutral-950 rounded-lg p-2 sm:p-3 lg:p-4 flex flex-col overflow-hidden shadow-2xl"
   >
-    <span class="text-base sm:text-lg lg:text-xl text-yellow-500 font-bold shrink-0"
-      >Próximamente</span
-    >
+    <span class="text-base sm:text-lg lg:text-xl text-yellow-500 font-bold shrink-0">
+      Próximamente
+    </span>
 
     <div
       class="mt-2 sm:mt-3 lg:mt-4 flex-1 overflow-y-auto space-y-2 sm:space-y-3 lg:space-y-4 scrollbar-hide"
     >
-      @for (movie of movies$.value(); track movie.id) {
+      @for (movie of movies$.value() ?? []; track movie.id; let i = $index) {
         <div class="flex flex-row gap-2 sm:gap-3 lg:gap-4 group cursor-pointer">
-          <img
-            src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
-            class="w-8 sm:w-12 md:w-16 lg:w-20 xl:w-24 rounded-lg shadow-2xl shrink-0"
-            alt="{{ movie.title }}"
-          />
+          <div
+            class="relative w-8 sm:w-12 md:w-16 lg:w-20 xl:w-24 aspect-[2/3] rounded-lg shadow-2xl shrink-0 overflow-hidden"
+          >
+            <img
+              [ngSrc]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+              [alt]="movie.title"
+              class="object-cover"
+              [priority]="i < 5"
+              fill
+            />
+          </div>
           <div class="flex flex-col justify-center gap-1 sm:gap-2 text-white flex-1 min-w-0">
-            <span class="text-sm sm:text-base lg:text-lg font-semibold line-clamp-2">{{
-              movie.title
-            }}</span>
+            <span class="text-sm sm:text-base lg:text-lg font-semibold line-clamp-2">
+              {{ movie.title }}
+            </span>
             <p class="text-xs sm:text-sm font-extralight text-gray-400">
               {{ movie.release_date | date: 'd/M/y' }}
             </p>
@@ -27,9 +33,9 @@
               class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit mt-1"
             >
               <i class="fa-regular fa-circle-play text-base sm:text-lg lg:text-2xl"></i>
-              <span class="text-xs sm:text-sm lg:text-base font-semibold hidden sm:inline"
-                >Ver tráiler</span
-              >
+              <span class="text-xs sm:text-sm lg:text-base font-semibold hidden sm:inline">
+                Ver tráiler
+              </span>
             </div>
           </div>
         </div>
@@ -37,6 +43,6 @@
     </div>
   </div>
   <div
-    class="absolute bottom-0 left-0 right-0 h-1/3 bg-linear-to-t from-black to-transparent pointer-events-none z-10 rounded-b-lg"
+    class="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black to-transparent pointer-events-none z-10 rounded-b-lg"
   ></div>
 </div>

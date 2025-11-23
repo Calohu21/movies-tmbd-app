@@ -1,5 +1,15 @@
-import { Component, computed, inject, signal, OnDestroy, effect, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import {
+  Component,
+  computed,
+  inject,
+  signal,
+  effect,
+  PLATFORM_ID,
+  untracked,
+  DestroyRef,
+  OnDestroy,
+} from '@angular/core';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MoviesService } from '../../../../movies.service';
@@ -8,7 +18,7 @@ import { MovieTrailer } from '../movie-trailer/movie-trailer';
 
 @Component({
   selector: 'app-hero',
-  imports: [MovieTrailer],
+  imports: [MovieTrailer, NgOptimizedImage],
   templateUrl: './hero.html',
 })
 export class Hero implements OnDestroy {
@@ -21,14 +31,16 @@ export class Hero implements OnDestroy {
   private readonly isPaused = signal<boolean>(false);
   private readonly hasTrailer = computed<boolean>(() => this.currentTrailerKey() !== null);
   private readonly totalMovies = computed<number>(() => this.movies().length);
+  private transitionTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   readonly currentIndex = signal<number>(0);
   readonly previousIndex = signal<number>(-1);
   readonly slideDirection = signal<'next' | 'prev'>('next');
   readonly isTransitioning = signal<boolean>(false);
   readonly isOpenModal = signal<boolean>(false);
-  readonly movies = computed<MovieWithTrailer[]>(() => this.heroDataResource.value() ?? []);
+  readonly movies = computed<MovieWithTrailer[]>(() => this.heroDataResource$.value() ?? []);
 
-  readonly heroDataResource = rxResource({
+  readonly heroDataResource$ = rxResource({
     stream: () => this.movieService.getTrendingMovieWithTrailer(),
   });
 
@@ -61,16 +73,20 @@ export class Hero implements OnDestroy {
   });
 
   constructor() {
+    const destroyRef = inject(DestroyRef);
+
     effect(() => {
       const movies = this.movies();
       if (movies.length > 0 && !this.autoPlayTimer) {
-        this.startAutoPlay();
+        untracked(() => {
+          if (!this.isPaused()) this.startAutoPlay();
+        });
       }
     });
-  }
 
-  ngOnDestroy() {
-    this.stopAutoPlay();
+    destroyRef.onDestroy(() => {
+      this.stopAutoPlay();
+    });
   }
 
   goToPrev() {
@@ -82,7 +98,11 @@ export class Hero implements OnDestroy {
     this.currentIndex.set(this.prevIndex());
     this.resetAutoPlay();
 
-    setTimeout(() => {
+    if (this.transitionTimeoutId) {
+      clearTimeout(this.transitionTimeoutId);
+    }
+
+    this.transitionTimeoutId = setTimeout(() => {
       this.isTransitioning.set(false);
     }, 500);
   }
@@ -99,6 +119,13 @@ export class Hero implements OnDestroy {
     setTimeout(() => {
       this.isTransitioning.set(false);
     }, 500);
+  }
+
+  ngOnDestroy() {
+    this.stopAutoPlay();
+    if (this.transitionTimeoutId) {
+      clearTimeout(this.transitionTimeoutId);
+    }
   }
 
   private startAutoPlay() {

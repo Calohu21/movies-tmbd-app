@@ -1,4 +1,4 @@
-@if (heroDataResource.isLoading()) {
+@if (heroDataResource$.isLoading()) {
   <div class="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
     <div class="w-full h-full bg-base-300 animate-pulse"></div>
     <div class="absolute bottom-4 left-4 right-4 flex gap-4">
@@ -10,10 +10,10 @@
       </div>
     </div>
   </div>
-} @else if (heroDataResource.error()) {
+} @else if (heroDataResource$.error()) {
   <div class="flex justify-between alert alert-error max-w-xl mx-auto mt-8">
     <span>Error al cargar películas</span>
-    <button class="btn btn-sm" (click)="heroDataResource.reload()">Reintentar</button>
+    <button class="btn btn-sm" (click)="heroDataResource$.reload()">Reintentar</button>
   </div>
 } @else if (movies().length > 0) {
   <div
@@ -43,9 +43,11 @@
         >
           <div class="relative w-full h-full">
             <img
-              src="https://image.tmdb.org/t/p/w1280{{ item.movie.backdrop_path }}"
-              alt="{{ item.movie.title }}"
+              [ngSrc]="'https://image.tmdb.org/t/p/w1280' + item.movie.backdrop_path"
+              [alt]="item.movie.title"
               class="object-cover w-full h-full"
+              priority
+              fill
             />
             <div
               class="absolute bottom-0 left-0 right-0 h-3/4 bg-linear-to-t from-black to-transparent"
@@ -55,12 +57,14 @@
             class="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 flex flex-col sm:flex-row items-start sm:items-end gap-2 sm:gap-3 lg:gap-4"
           >
             <div
-              class="relative shrink-0 transition-all duration-300 hover:scale-105 hover:brightness-90"
+              class="relative shrink-0 w-24 h-36 sm:w-28 sm:h-40 md:w-32 md:h-48 lg:w-45 lg:h-70 transition-all duration-300 hover:scale-105 hover:brightness-90"
             >
               <img
-                src="https://image.tmdb.org/t/p/w500{{ item.movie.poster_path }}"
-                class="w-20 sm:w-24 md:w-28 lg:w-36 xl:w-44 rounded-lg shadow-2xl"
-                alt="{{ item.movie.title }}"
+                [ngSrc]="'https://image.tmdb.org/t/p/w500' + item.movie.poster_path"
+                [alt]="item.movie.title"
+                class="object-cover rounded-lg"
+                priority
+                fill
               />
             </div>
             <div class="flex flex-col justify-end gap-2 sm:gap-3 text-white pb-0 sm:pb-2 flex-1">
@@ -75,7 +79,7 @@
                   </span>
                 </div>
               </div>
-              <div class="h-9 sm:h-10 lg:h-12">
+              <button class="h-9 sm:h-10 lg:h-12">
                 @if (item.trailerKey) {
                   <div
                     (click)="openTrailer()"
@@ -87,14 +91,14 @@
                     </span>
                   </div>
                 }
-              </div>
+              </button>
             </div>
           </div>
         </div>
       }
     </div>
     <div
-      class="absolute left-2 right-2 top-2/6 flex -translate-y-1/2 transform justify-between pointer-events-none z-20"
+      class="absolute left-2 right-2 top-3/8 flex -translate-y-1/2 transform justify-between pointer-events-none z-20"
     >
       <button
         (click)="goToPrev()"
