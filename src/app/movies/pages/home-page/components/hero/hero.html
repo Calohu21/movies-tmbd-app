@@ -1,8 +1,6 @@
 @if (heroDataResource.isLoading()) {
-  <div
-    class="relative w-full mx-4 mt-8 sm:w-11/12 sm:ml-4 sm:mr-auto sm:mt-10 lg:w-5/8 lg:ml-8 lg:mt-15 rounded-lg overflow-hidden shadow-2xl"
-  >
-    <div class="aspect-video bg-base-300 animate-pulse"></div>
+  <div class="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
+    <div class="w-full h-full bg-base-300 animate-pulse"></div>
     <div class="absolute bottom-4 left-4 right-4 flex gap-4">
       <div class="w-32 h-48 bg-base-300 rounded-lg animate-pulse"></div>
       <div class="flex-1 space-y-3">
@@ -19,11 +17,11 @@
   </div>
 } @else if (movies().length > 0) {
   <div
-    class="relative cursor-pointer group hover:brightness-95"
+    class="relative h-full cursor-pointer group hover:brightness-95"
     (mouseenter)="pauseAutoPlay()"
     (mouseleave)="resumeAutoPlay()"
   >
-    <div class="relative w-full aspect-video rounded-lg overflow-hidden shadow-2xl">
+    <div class="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
       @for (item of movies(); track item.movie.id; let i = $index) {
         @let isCurrent = i === currentIndex();
         @let isPrevious = i === previousIndex();
