@@ -1,30 +1,39 @@
-<div class="bg-neutral-950 rounded-lg p-2 sm:p-3 lg:p-4 h-full flex flex-col overflow-hidden">
-  <span class="text-base sm:text-lg lg:text-xl text-yellow-500 font-bold shrink-0"
-    >Próximamente</span
-  >
-
+<div class="relative w-full h-full">
   <div
-    class="mt-2 sm:mt-3 lg:mt-4 flex-1 overflow-y-auto space-y-2 sm:space-y-3 lg:space-y-4 scrollbar-hide"
+    class="absolute inset-0 bg-neutral-950 rounded-lg p-2 sm:p-3 lg:p-4 flex flex-col overflow-hidden shadow-2xl"
   >
-    @for (movie of movies$.value(); track movie.id) {
-      <div class="flex flex-row gap-2 sm:gap-3 lg:gap-5 group">
-        <img
-          src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
-          class="w-2 sm:w-4 md:w-8 lg:w-16 xl:w-22 rounded-lg shadow-2xl shrink-0"
-          alt="{{ movie.title }}"
-        />
-        <div
-          class="flex flex-col justify-end gap-1 sm:gap-2 lg:gap-3 text-white pb-0 sm:pb-2 flex-1"
-        >
-          <div
-            class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
-          >
-            <i class="fa-regular fa-circle-play text-sm sm:text-base lg:text-3xl"></i>
+    <span class="text-base sm:text-lg lg:text-xl text-yellow-500 font-bold shrink-0"
+      >Próximamente</span
+    >
+
+    <div
+      class="mt-2 sm:mt-3 lg:mt-4 flex-1 overflow-y-auto space-y-2 sm:space-y-3 lg:space-y-4 scrollbar-hide"
+    >
+      @for (movie of movies$.value(); track movie.id) {
+        <div class="flex flex-row gap-2 sm:gap-3 lg:gap-4 group">
+          <img
+            src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}"
+            class="w-16 sm:w-20 md:w-24 lg:w-28 xl:w-32 rounded-lg shadow-2xl shrink-0"
+            alt="{{ movie.title }}"
+          />
+          <div class="flex flex-col justify-center gap-1 sm:gap-2 text-white flex-1 min-w-0">
+            <span class="text-sm sm:text-base lg:text-lg font-semibold line-clamp-2">{{
+              movie.title
+            }}</span>
+            <p class="text-xs sm:text-sm font-extralight text-gray-400">
+              {{ movie.release_date | date: 'd/M/y' }}
+            </p>
+            <div
+              class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit mt-1"
+            >
+              <i class="fa-regular fa-circle-play text-base sm:text-lg lg:text-2xl"></i>
+              <span class="text-xs sm:text-sm lg:text-base font-semibold hidden sm:inline"
+                >Ver tráiler</span
+              >
+            </div>
           </div>
-          <span class="text-sm sm:text-base lg:text-lg">{{ movie.title }}</span>
-          <p class="text-xs font-extralight">{{ movie.release_date | date: 'd/M/y' }}</p>
         </div>
-      </div>
-    }
+      }
+    </div>
   </div>
 </div>
