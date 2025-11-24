@@ -1,4 +1,4 @@
-@if (heroDataResource$.isLoading()) {
+@if (heroDataResource.isLoading()) {
   <div class="relative w-full h-full rounded-lg overflow-hidden shadow-2xl">
     <div class="w-full h-full bg-base-300 animate-pulse"></div>
     <div class="absolute bottom-4 left-4 right-4 flex gap-4">
@@ -10,10 +10,14 @@
       </div>
     </div>
   </div>
-} @else if (heroDataResource$.error()) {
-  <div class="flex justify-between alert alert-error max-w-xl mx-auto mt-8">
-    <span>Error al cargar películas</span>
-    <button class="btn btn-sm" (click)="heroDataResource$.reload()">Reintentar</button>
+} @else if (heroDataResource.error()) {
+  <div
+    role="alert"
+    class="flex justify-between alert alert-error max-w-xl mx-auto mt-8 rounded-lg bg-red-300"
+  >
+    <i class="fa-solid fa-circle-exclamation text-2xl"></i>
+    <span class="font-bold">Error al cargar películas</span>
+    <button class="btn btn-sm rounded-lg" (click)="heroDataResource.reload()">Reintentar</button>
   </div>
 } @else if (movies().length > 0) {
   <div

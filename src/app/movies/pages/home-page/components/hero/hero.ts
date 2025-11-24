@@ -38,9 +38,14 @@ export class Hero implements OnDestroy {
   readonly slideDirection = signal<'next' | 'prev'>('next');
   readonly isTransitioning = signal<boolean>(false);
   readonly isOpenModal = signal<boolean>(false);
-  readonly movies = computed<MovieWithTrailer[]>(() => this.heroDataResource$.value() ?? []);
+  readonly movies = computed<MovieWithTrailer[]>(() => {
+    if (this.heroDataResource.error()) {
+      return [];
+    }
+    return this.heroDataResource.value() ?? [];
+  });
 
-  readonly heroDataResource$ = rxResource({
+  readonly heroDataResource = rxResource({
     stream: () => this.movieService.getTrendingMovieWithTrailer(),
   });
 
