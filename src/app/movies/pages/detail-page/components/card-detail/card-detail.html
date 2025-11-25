@@ -42,5 +42,20 @@
         Número de votos: {{ movie()?.vote_count }}
       </div>
     </div>
+    <div class="absolute bottom-6 right-6 z-20">
+      <button
+        (click)="openTrailer(); $event.stopPropagation()"
+        class="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:text-yellow-500 hover:scale-105 text-white"
+      >
+        <i class="fa-regular fa-circle-play text-3xl lg:text-4xl"></i>
+        <span class="font-bold text-lg lg:text-xl">Reproducir tráiler</span>
+      </button>
+    </div>
   </div>
 </div>
+
+<app-movie-trailer
+  [safeTrailerUrl]="trailerService.safeTrailerUrl()"
+  [isOpenModal]="trailerService.isOpenModal()"
+  (closeModal)="closeTrailer()"
+/>

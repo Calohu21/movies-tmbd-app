@@ -21,7 +21,7 @@ export class MoviesService {
       .pipe(map((response) => response.results));
   }
 
-  private getMovieVideos(movieId: number): Observable<Video[]> {
+  getMovieVideos(movieId: number): Observable<Video[]> {
     return this.http
       .get<VideoResponse>(`${this.apiUrl}/movie/${movieId}/videos`)
       .pipe(map((response) => response.results));
@@ -49,7 +49,7 @@ export class MoviesService {
     );
   }
 
-  private findOfficialTrailerKey(videos: Video[]): string | null {
+  findOfficialTrailerKey(videos: Video[]): string | null {
     const trailer =
       videos.find(
         (v) => v.type === 'Trailer' && v.official && v.site === 'YouTube' && v.iso_639_1 === 'es',

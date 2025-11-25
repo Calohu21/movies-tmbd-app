@@ -128,7 +128,7 @@
 }
 
 <app-movie-trailer
-  [safeTrailerUrl]="safeTrailerUrl()"
-  [isOpenModal]="isOpenModal()"
+  [safeTrailerUrl]="trailerService.safeTrailerUrl()"
+  [isOpenModal]="trailerService.isOpenModal()"
   (closeModal)="closeTrailer()"
 />
