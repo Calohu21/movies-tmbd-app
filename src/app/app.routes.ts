@@ -1,17 +1,15 @@
 import { Routes } from '@angular/router';
 import { HomePage } from './movies/pages/home-page/home-page';
-import { Layout } from './movies/pages/home-page/layout/layout';
+import { DetailPage } from './movies/pages/detail-page/detail-page';
 
 export const routes: Routes = [
   {
     path: '',
-    component: Layout,
-    children: [
-      {
-        path: '',
-        component: HomePage,
-      },
-    ],
+    component: HomePage,
+  },
+  {
+    path: 'movie-detail/:movieId',
+    component: DetailPage,
   },
   {
     path: '**',
