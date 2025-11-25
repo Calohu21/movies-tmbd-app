@@ -10,4 +10,20 @@
     <app-upcoming class="block h-full" />
   </div>
 </section>
+
+@if (upcomingMoviesResource.hasValue() && upcomingMovies().length > 0) {
+  <section class="px-[15px] sm:px-[30px] md:px-[60px] lg:px-[80px] xl:px-[90px]">
+    <app-movie-carousel [title]="'Upcoming'" [movies]="upcomingMovies()" />
+  </section>
+} @else if (upcomingMoviesResource.isLoading()) {
+  <section class="mt-8 px-[15px] sm:px-[30px] md:px-[60px] lg:px-[80px] xl:px-[90px]">
+    <div class="h-8 w-48 bg-base-300 rounded animate-pulse mb-4"></div>
+    <div class="flex gap-2">
+      @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+        <div class="flex-shrink-0 w-1/6 aspect-[2/3] bg-base-300 rounded-lg animate-pulse"></div>
+      }
+    </div>
+  </section>
+}
+
 <router-outlet />
