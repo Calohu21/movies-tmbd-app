@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { DetailMovie } from '../../../../../core/models/movie.detail.interface';
 
 @Component({
   selector: 'app-card-detail',
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, DatePipe],
   templateUrl: './card-detail.html',
   styles: ``,
 })
