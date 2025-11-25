@@ -13,35 +13,45 @@ export class MovieCarousel {
   title = input.required<string>();
   movies = input.required<Movie[]>();
 
-  readonly currentPage = signal<number>(0);
+  readonly startIndex = signal<number>(0);
   readonly isHovering = signal<boolean>(false);
 
   readonly itemsPerPage = computed(() => {
     return 6;
   });
 
-  readonly totalPages = computed(() => {
-    const total = this.movies().length;
+  readonly totalMovies = computed(() => this.movies().length);
+
+  readonly maxStartIndex = computed(() => {
+    const total = this.totalMovies();
     const perPage = this.itemsPerPage();
-    return Math.ceil(total / perPage);
+    return Math.max(0, total - perPage);
   });
 
-  readonly canGoPrev = computed(() => this.currentPage() > 0);
-  readonly canGoNext = computed(() => this.currentPage() < this.totalPages() - 1);
+  readonly canGoPrev = computed(() => this.startIndex() > 0);
+  readonly canGoNext = computed(() => this.startIndex() < this.maxStartIndex());
 
   readonly translateX = computed(() => {
-    return -(this.currentPage() * 100);
+    const start = this.startIndex();
+    const perPage = this.itemsPerPage();
+    if (perPage === 0) return 0;
+
+    const percentPerMovie = 100 / perPage;
+    return -(start * percentPerMovie);
   });
 
   goToPrev() {
     if (this.canGoPrev()) {
-      this.currentPage.update((page) => page - 1);
+      const perPage = this.itemsPerPage();
+      this.startIndex.update((index) => Math.max(0, index - perPage));
     }
   }
 
   goToNext() {
     if (this.canGoNext()) {
-      this.currentPage.update((page) => page + 1);
+      const perPage = this.itemsPerPage();
+      const maxIndex = this.maxStartIndex();
+      this.startIndex.update((index) => Math.min(maxIndex, index + perPage));
     }
   }
 
