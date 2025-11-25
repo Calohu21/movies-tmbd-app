@@ -27,7 +27,7 @@
       </h3>
       <div class="flex items-center gap-2 text-m mt-3 mr-15">
         {{ movie()?.release_date | date: 'dd-M-yyyy' }}
-        <div class="flex items-center gap-2 text-m">- {{ movie()?.runtime }}</div>
+        <div class="flex items-center gap-2 text-m">- {{ movie()?.runtime | runtime }}</div>
         <div class="flex items-center gap-2 text-m mr-15">{{ movie()?.genres }}</div>
       </div>
       <div class="flex items-center gap-2 text-sm mt-3 mr-15 w-2/3">{{ movie()?.overview }}</div>
