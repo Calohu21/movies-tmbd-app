@@ -15,10 +15,11 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MoviesService } from '../../../../movies.service';
 import { MovieWithTrailer } from '../../../../../core/models/video.interface';
 import { MovieTrailer } from '../movie-trailer/movie-trailer';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-hero',
-  imports: [MovieTrailer, NgOptimizedImage],
+  imports: [MovieTrailer, NgOptimizedImage, RouterLink],
   templateUrl: './hero.html',
 })
 export class Hero implements OnDestroy {
