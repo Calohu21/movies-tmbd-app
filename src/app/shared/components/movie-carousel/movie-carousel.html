@@ -14,7 +14,7 @@
             class="block relative aspect-[2/3] group cursor-pointer"
           >
             <img
-              [ngSrc]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+              [ngSrc]="movie.poster_path | tmdbImage:'poster'"
               [alt]="movie.title"
               class="rounded-lg object-cover w-full h-full transition-all duration-300 group-hover:scale-105 group-hover:brightness-110 shadow-lg"
               fill

@@ -2,10 +2,11 @@ import { Component, input, signal, computed } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Movie } from '../../../core/models/movie.interface';
+import { TmdbImagePipe } from '../../pipes/tmdb-image.pipe';
 
 @Component({
   selector: 'app-movie-carousel',
-  imports: [NgOptimizedImage, RouterLink],
+  imports: [NgOptimizedImage, RouterLink, TmdbImagePipe],
   templateUrl: './movie-carousel.html',
   styles: ``,
 })

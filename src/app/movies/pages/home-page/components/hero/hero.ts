@@ -16,10 +16,11 @@ import { MovieWithTrailer } from '../../../../../core/models/video.interface';
 import { MovieTrailer } from '../../../../../shared/components/movie-trailer/movie-trailer';
 import { RouterLink } from '@angular/router';
 import { TrailerService } from '../../../../../shared/services/trailer.service';
+import { TmdbImagePipe } from '../../../../../shared/pipes/tmdb-image.pipe';
 
 @Component({
   selector: 'app-hero',
-  imports: [MovieTrailer, NgOptimizedImage, RouterLink],
+  imports: [MovieTrailer, NgOptimizedImage, RouterLink, TmdbImagePipe],
   templateUrl: './hero.html',
 })
 export class Hero implements OnDestroy {

@@ -15,7 +15,7 @@
             class="relative w-8 sm:w-12 md:w-16 lg:w-20 xl:w-24 aspect-[2/3] rounded-lg shadow-2xl shrink-0 overflow-hidden"
           >
             <img
-              [ngSrc]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+              [ngSrc]="movie.poster_path | tmdbImage:'poster'"
               [alt]="movie.title"
               class="object-cover"
               [priority]="i < 5"
