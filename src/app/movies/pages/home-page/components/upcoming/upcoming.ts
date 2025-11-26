@@ -2,10 +2,12 @@ import { Component, inject } from '@angular/core';
 import { MoviesService } from '../../../../movies.service';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
+import { TrailerService } from '../../../../../shared/services/trailer.service';
+import { MovieTrailer } from '../../../../../shared/components/movie-trailer/movie-trailer';
 
 @Component({
   selector: 'app-upcoming',
-  imports: [DatePipe, NgOptimizedImage],
+  imports: [DatePipe, NgOptimizedImage, MovieTrailer],
   templateUrl: './upcoming.html',
   styles: `
     .scrollbar-hide {
@@ -19,9 +21,19 @@ import { DatePipe, NgOptimizedImage } from '@angular/common';
   `,
 })
 export class Upcoming {
-  private movieService = inject(MoviesService);
+  private readonly movieService = inject(MoviesService);
+  readonly trailerService = inject(TrailerService);
 
-  movies$ = rxResource({
+  readonly movies$ = rxResource({
     stream: () => this.movieService.getUpcomingMovies(),
   });
+
+  openTrailer(movieId: number, event: Event) {
+    event.stopPropagation();
+    this.trailerService.openTrailer(movieId);
+  }
+
+  closeTrailer() {
+    this.trailerService.closeTrailer();
+  }
 }
