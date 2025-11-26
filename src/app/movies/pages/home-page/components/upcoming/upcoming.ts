@@ -4,15 +4,16 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { TrailerService } from '../../../../../shared/services/trailer.service';
 import { MovieTrailer } from '../../../../../shared/components/movie-trailer/movie-trailer';
+import { TmdbImagePipe } from '../../../../../shared/pipes/tmdb-image.pipe';
 
 @Component({
   selector: 'app-upcoming',
-  imports: [DatePipe, NgOptimizedImage, MovieTrailer],
+  imports: [DatePipe, NgOptimizedImage, MovieTrailer, TmdbImagePipe],
   templateUrl: './upcoming.html',
   styles: `
     .scrollbar-hide {
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
 
     .scrollbar-hide::-webkit-scrollbar {

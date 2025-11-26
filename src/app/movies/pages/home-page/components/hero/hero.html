@@ -50,7 +50,7 @@
         >
           <div class="relative w-full h-full">
             <img
-              [ngSrc]="'https://image.tmdb.org/t/p/w1280' + item.movie.backdrop_path"
+              [ngSrc]="item.movie.backdrop_path | tmdbImage:'backdrop'"
               [alt]="item.movie.title"
               class="object-cover w-full h-full"
               priority
@@ -67,7 +67,7 @@
               class="relative shrink-0 w-24 h-36 sm:w-28 sm:h-40 md:w-32 md:h-48 lg:w-45 lg:h-70 transition-all duration-300 hover:scale-105 hover:brightness-90"
             >
               <img
-                [ngSrc]="'https://image.tmdb.org/t/p/w500' + item.movie.poster_path"
+                [ngSrc]="item.movie.poster_path | tmdbImage:'poster'"
                 [alt]="item.movie.title"
                 class="object-cover rounded-lg"
                 priority

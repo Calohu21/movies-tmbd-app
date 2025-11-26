@@ -1,7 +1,7 @@
 <div class="relative w-full min-h-[400px] md:min-h-[500px] overflow-hidden rounded-lg">
   <div class="absolute inset-0 brightness-80">
     <img
-      [ngSrc]="'https://image.tmdb.org/t/p/original' + movie()?.backdrop_path"
+      [ngSrc]="movie()?.backdrop_path | tmdbImage: 'backdrop'"
       [alt]="movie()?.title"
       class="object-cover blur-[2px]"
       priority
@@ -13,7 +13,7 @@
   <div class="absolute bottom-0 left-0 z-10 flex flex-col md:flex-row items-end gap-6 p-6 md:p-10">
     <div class="flex-shrink-0 w-28 md:w-44 lg:w-60">
       <img
-        [ngSrc]="'https://image.tmdb.org/t/p/w500' + movie()?.poster_path"
+        [ngSrc]="movie()?.poster_path | tmdbImage: 'poster'"
         [alt]="movie()?.title"
         class="rounded-lg shadow-2xl w-full h-auto"
         priority
