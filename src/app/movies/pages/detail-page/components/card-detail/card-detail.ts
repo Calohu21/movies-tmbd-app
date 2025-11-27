@@ -14,7 +14,7 @@ import { TmdbImagePipe } from '../../../../../shared/pipes/tmdb-image.pipe';
   styles: ``,
 })
 export class CardDetail {
-  movie = input.required<DetailMovie | undefined>();
+  movie = input.required<DetailMovie>();
   readonly trailerService = inject(TrailerService);
 
   openTrailer() {

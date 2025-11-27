@@ -16,5 +16,5 @@ export class DetailPage {
   movieResource = rxResource({
     stream: () => this.moviesService.getMovieById(this.movieId()),
   });
-  readonly movie = computed(this.movieResource.value);
+  readonly movie = computed(() => this.movieResource.value());
 }
