@@ -12,6 +12,9 @@ export class TrailerService {
   readonly isOpenModal = signal<boolean>(false);
   readonly currentMovieId = signal<number | null>(null);
   readonly currentTrailerKey = signal<string | null>(null);
+  readonly isLoadingTrailer = signal<boolean>(false);
+
+  private readonly trailerCache = new Map<number, string | null>();
 
   readonly safeTrailerUrl = computed<SafeResourceUrl | null>(() => {
     const key = this.currentTrailerKey();
@@ -29,6 +32,7 @@ export class TrailerService {
     this.isOpenModal.set(false);
     this.currentTrailerKey.set(null);
     this.currentMovieId.set(null);
+    this.isLoadingTrailer.set(false);
   }
 
   setTrailerKey(key: string | null): void {
@@ -39,17 +43,40 @@ export class TrailerService {
   }
 
   private loadTrailer(movieId: number): void {
-    this.moviesService.getMovieVideos(movieId).subscribe({
-      next: (videos) => {
-        const trailerKey = this.moviesService.findOfficialTrailerKey(videos);
+    const cached = this.trailerCache.get(movieId);
+    if (cached !== undefined) {
+      this.setTrailerKey(cached);
+      return;
+    }
+
+    this.isLoadingTrailer.set(true);
+
+    this.moviesService.getTrailerKeyForMovie(movieId).subscribe({
+      next: (trailerKey) => {
+        this.trailerCache.set(movieId, trailerKey);
+        this.isLoadingTrailer.set(false);
         if (trailerKey) {
           this.setTrailerKey(trailerKey);
+        } else {
+          console.warn(`No trailer found for movie ${movieId}`);
         }
       },
       error: (err) => {
         console.error('Error loading trailer:', err);
+        this.trailerCache.set(movieId, null);
+        this.isLoadingTrailer.set(false);
         this.currentTrailerKey.set(null);
       },
     });
+  }
+
+  hasTrailer(movieId: number): boolean | undefined {
+    const cached = this.trailerCache.get(movieId);
+    if (cached === undefined) return undefined; // Not checked yet
+    return cached !== null; // true if has trailer, false if null
+  }
+
+  clearCache(): void {
+    this.trailerCache.clear();
   }
 }

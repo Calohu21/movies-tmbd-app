@@ -1,11 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { forkJoin, Observable, of, tap } from 'rxjs';
-import { map, catchError, switchMap } from 'rxjs/operators';
+import { Observable, of, tap } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
 import { Movie, MovieResponse } from '../core/models/movie.interface';
-import { MovieWithTrailer, Video, VideoResponse } from '../core/models/video.interface';
+import { Video, VideoResponse } from '../core/models/video.interface';
 import { DetailMovie } from '../core/models/movie.detail.interface';
 
 @Injectable({
@@ -27,28 +27,6 @@ export class MoviesService {
       .pipe(map((response) => response.results));
   }
 
-  getTrendingMovieWithTrailer(): Observable<MovieWithTrailer[]> {
-    return this.getTrendingMovies().pipe(
-      switchMap((movies) => {
-        if (!movies || movies.length === 0) {
-          throw new Error('No trending movies found');
-        }
-
-        const movieWithTrailerRequests: Observable<MovieWithTrailer>[] = movies.map((movie) =>
-          this.getMovieVideos(movie.id).pipe(
-            map((videos) => ({
-              movie,
-              trailerKey: this.findOfficialTrailerKey(videos),
-            })),
-            catchError(() => of({ movie, trailerKey: null })),
-          ),
-        );
-
-        return forkJoin(movieWithTrailerRequests);
-      }),
-    );
-  }
-
   findOfficialTrailerKey(videos: Video[]): string | null {
     const trailer =
       videos.find(
@@ -61,9 +39,37 @@ export class MoviesService {
     return trailer?.key ?? null;
   }
 
+  getTrailerKeyForMovie(movieId: number): Observable<string | null> {
+    return this.getMovieVideos(movieId).pipe(
+      map((videos) => this.findOfficialTrailerKey(videos)),
+      catchError((error) => {
+        console.error(`Error loading trailer for movie ${movieId}:`, error);
+        return of(null);
+      }),
+    );
+  }
+
   getUpcomingMovies(): Observable<Movie[]> {
     return this.http
       .get<MovieResponse>(`${this.apiUrl}/movie/upcoming`)
+      .pipe(map((response) => response.results));
+  }
+
+  getNowPlayingMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/now_playing`)
+      .pipe(map((response) => response.results));
+  }
+
+  getPopularMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/popular`)
+      .pipe(map((response) => response.results));
+  }
+
+  getTopRatedMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/top_rated`)
       .pipe(map((response) => response.results));
   }
 
