@@ -61,6 +61,21 @@ export class MoviesService {
     return trailer?.key ?? null;
   }
 
+  /**
+   * Fetches trailer key on-demand for a specific movie
+   * @param movieId - The ID of the movie
+   * @returns Observable<string | null> - The trailer key or null if not found
+   */
+  getTrailerKeyForMovie(movieId: number): Observable<string | null> {
+    return this.getMovieVideos(movieId).pipe(
+      map((videos) => this.findOfficialTrailerKey(videos)),
+      catchError((error) => {
+        console.error(`Error loading trailer for movie ${movieId}:`, error);
+        return of(null);
+      }),
+    );
+  }
+
   getUpcomingMovies(): Observable<Movie[]> {
     return this.http
       .get<MovieResponse>(`${this.apiUrl}/movie/upcoming`)

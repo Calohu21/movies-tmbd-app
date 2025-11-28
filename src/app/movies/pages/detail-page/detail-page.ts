@@ -10,11 +10,11 @@ import { rxResource } from '@angular/core/rxjs-interop';
   styles: ``,
 })
 export class DetailPage {
-  moviesService = inject(MoviesService);
-  movieId = input.required<string>();
-
-  movieResource = rxResource({
-    stream: () => this.moviesService.getMovieById(this.movieId()),
-  });
-  readonly movie = computed(() => this.movieResource.value());
+  // moviesService = inject(MoviesService);
+  // movieId = input.required<string>();
+  //
+  // movieResource = rxResource({
+  //   stream: () => this.moviesService.getMovieById(this.movieId()),
+  // });
+  // readonly movie = computed(() => this.movieResource.value());
 }

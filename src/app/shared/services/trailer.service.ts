@@ -12,6 +12,10 @@ export class TrailerService {
   readonly isOpenModal = signal<boolean>(false);
   readonly currentMovieId = signal<number | null>(null);
   readonly currentTrailerKey = signal<string | null>(null);
+  readonly isLoadingTrailer = signal<boolean>(false);
+
+  // Cache to prevent re-fetching already loaded trailers
+  private readonly trailerCache = new Map<number, string | null>();
 
   readonly safeTrailerUrl = computed<SafeResourceUrl | null>(() => {
     const key = this.currentTrailerKey();
@@ -29,6 +33,7 @@ export class TrailerService {
     this.isOpenModal.set(false);
     this.currentTrailerKey.set(null);
     this.currentMovieId.set(null);
+    this.isLoadingTrailer.set(false);
   }
 
   setTrailerKey(key: string | null): void {
@@ -39,17 +44,40 @@ export class TrailerService {
   }
 
   private loadTrailer(movieId: number): void {
-    this.moviesService.getMovieVideos(movieId).subscribe({
-      next: (videos) => {
-        const trailerKey = this.moviesService.findOfficialTrailerKey(videos);
+    // Check cache first
+    const cached = this.trailerCache.get(movieId);
+    if (cached !== undefined) {
+      this.setTrailerKey(cached);
+      return;
+    }
+
+    // Set loading state
+    this.isLoadingTrailer.set(true);
+
+    // Fetch on-demand using the optimized method
+    this.moviesService.getTrailerKeyForMovie(movieId).subscribe({
+      next: (trailerKey) => {
+        this.trailerCache.set(movieId, trailerKey);
+        this.isLoadingTrailer.set(false);
         if (trailerKey) {
           this.setTrailerKey(trailerKey);
+        } else {
+          console.warn(`No trailer found for movie ${movieId}`);
         }
       },
       error: (err) => {
         console.error('Error loading trailer:', err);
+        this.trailerCache.set(movieId, null);
+        this.isLoadingTrailer.set(false);
         this.currentTrailerKey.set(null);
       },
     });
+  }
+
+  /**
+   * Optional: Clear the trailer cache to free memory
+   */
+  clearCache(): void {
+    this.trailerCache.clear();
   }
 }

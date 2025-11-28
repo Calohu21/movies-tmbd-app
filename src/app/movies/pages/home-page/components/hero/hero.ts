@@ -8,11 +8,12 @@ import {
   untracked,
   DestroyRef,
   OnDestroy,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MoviesService } from '../../../../movies.service';
-import { MovieWithTrailer } from '../../../../../core/models/video.interface';
+import { Movie } from '../../../../../core/models/movie.interface';
 import { MovieTrailer } from '../../../../../shared/components/movie-trailer/movie-trailer';
 import { RouterLink } from '@angular/router';
 import { TrailerService } from '../../../../../shared/services/trailer.service';
@@ -22,6 +23,7 @@ import { TmdbImagePipe } from '../../../../../shared/pipes/tmdb-image.pipe';
   selector: 'app-hero',
   imports: [MovieTrailer, NgOptimizedImage, RouterLink, TmdbImagePipe],
   templateUrl: './hero.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Hero implements OnDestroy {
   private readonly movieService = inject(MoviesService);
@@ -38,7 +40,7 @@ export class Hero implements OnDestroy {
   readonly previousIndex = signal<number>(-1);
   readonly slideDirection = signal<'next' | 'prev'>('next');
   readonly isTransitioning = signal<boolean>(false);
-  readonly movies = computed<MovieWithTrailer[]>(() => {
+  readonly movies = computed<Movie[]>(() => {
     if (this.heroDataResource.error()) {
       return [];
     }
@@ -46,14 +48,7 @@ export class Hero implements OnDestroy {
   });
 
   readonly heroDataResource = rxResource({
-    stream: () => this.movieService.getTrendingMovieWithTrailer(),
-  });
-
-  readonly currentTrailerKey = computed<string | null>(() => {
-    const moviesList = this.movies();
-    const index = this.currentIndex();
-    if (moviesList.length === 0) return null;
-    return moviesList[index]?.trailerKey ?? null;
+    stream: () => this.movieService.getTrendingMovies(),
   });
 
   readonly prevIndex = computed<number>(() => {
@@ -157,9 +152,13 @@ export class Hero implements OnDestroy {
   }
 
   openTrailer() {
-    const trailerKey = this.currentTrailerKey();
-    if (trailerKey) {
-      this.trailerService.setTrailerKey(trailerKey);
+    const moviesList = this.movies();
+    const index = this.currentIndex();
+    if (moviesList.length === 0) return;
+
+    const currentMovie = moviesList[index];
+    if (currentMovie) {
+      this.trailerService.openTrailer(currentMovie.id);
       this.pauseAutoPlay();
     }
   }
