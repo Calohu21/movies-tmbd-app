@@ -9,7 +9,6 @@
     />
     <div class="absolute inset-0 bg-black/50"></div>
   </div>
-
   <div class="absolute bottom-0 left-0 z-10 flex flex-col md:flex-row items-end gap-6 p-6 md:p-10">
     <div class="flex-shrink-0 w-28 md:w-44 lg:w-60">
       <img
@@ -21,39 +20,69 @@
         height="750"
       />
     </div>
-    <div class="flex flex-col justify-end text-white pb-2">
+    <div class="flex flex-col justify-end text-white pb-2 flex-1">
       <h3 class="text-xl md:text-2xl lg:text-3xl font-bold">
         {{ movie().title }}
       </h3>
-      <div class="flex items-center gap-2 text-m mt-3 mr-15">
-        {{ movie().release_date | date: 'dd-M-yyyy' }}
-        <div class="flex items-center gap-2 text-m">- {{ movie().runtime | runtime }}</div>
-        <div class="flex items-center gap-2 text-m mr-15">{{ movie().genres | genres }}</div>
+      <span class="text-lg text-gray-400">{{ movie().tagline }}</span>
+      <div class="flex items-center gap-2 text-sm mt-3">
+        <div class="flex items-center gap-2 bg-black rounded-xl px-2 py-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <span>{{ movie().release_date | date: 'dd-M-yyyy' }}</span>
+        </div>
+        <div class="flex items-center gap-2 bg-black rounded-xl px-2 py-1">
+          {{ movie().runtime | runtime }}
+        </div>
+        <div class="flex items-center gap-2 flex-wrap ml-10">
+          @for (genre of movie().genres | genres; track genre.id) {
+            <span class="bg-blue-900 rounded-xl px-2 py-1">{{ genre.name }}</span>
+          }
+        </div>
       </div>
-      <div class="flex items-center gap-2 text-sm mt-3 mr-15 w-2/3">{{ movie().overview }}</div>
+      <div class="flex items-center gap-2 text-sm mt-3 w-2/3">
+        {{ movie().overview }}
+      </div>
 
-      <div class="flex items-center gap-1">
-        <i class="fa-solid fa-star text-yellow-500 text-sm sm:text-base lg:text-lg"></i>
-        <span class="text-base sm:text-lg lg:text-xl font-semibold">
-          {{ movie().vote_average }}
-        </span>
+      <!-- Contenedor flex para puntuación y botón de tráiler -->
+      <div class="flex items-center justify-start mt-3">
+        <!-- Columna izquierda: Puntuación y votos -->
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-1">
+            <i class="fa-solid fa-star text-yellow-500 text-sm sm:text-base lg:text-lg"></i>
+            <span class="text-base sm:text-lg lg:text-xl font-semibold">
+              {{ movie().vote_average | number: '1.1-1' }}
+            </span>
+          </div>
+          <div class="flex items-center gap-2 text-m text-gray-400">
+            {{ movie().vote_count }} votos
+          </div>
+        </div>
+
+        <!-- Columna derecha: Botón de tráiler -->
+        <button
+          (click)="openTrailer(); $event.stopPropagation()"
+          class="flex items-center gap-2 mt-4 cursor-pointer ml-10 transition-all duration-300 hover:text-yellow-500 hover:scale-105 text-white"
+        >
+          <i class="fa-regular fa-circle-play text-3xl lg:text-4xl"></i>
+          <span class="font-bold text-lg lg:text-xl">Reproducir tráiler</span>
+        </button>
       </div>
-      <div class="flex items-center gap-2 text-m mt-3 mr-15">
-        Número de votos: {{ movie().vote_count }}
-      </div>
-    </div>
-    <div class="absolute bottom-6 right-6 z-20">
-      <button
-        (click)="openTrailer(); $event.stopPropagation()"
-        class="flex items-center gap-2 cursor-pointer transition-all duration-300 hover:text-yellow-500 hover:scale-105 text-white"
-      >
-        <i class="fa-regular fa-circle-play text-3xl lg:text-4xl"></i>
-        <span class="font-bold text-lg lg:text-xl">Reproducir tráiler</span>
-      </button>
     </div>
   </div>
 </div>
-
 <app-movie-trailer
   [safeTrailerUrl]="trailerService.safeTrailerUrl()"
   [isOpenModal]="trailerService.isOpenModal()"
