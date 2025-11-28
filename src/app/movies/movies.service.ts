@@ -67,6 +67,24 @@ export class MoviesService {
       .pipe(map((response) => response.results));
   }
 
+  getNowPlayingMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/now_playing`)
+      .pipe(map((response) => response.results));
+  }
+
+  getPopularMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/popular`)
+      .pipe(map((response) => response.results));
+  }
+
+  getTopRatedMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MovieResponse>(`${this.apiUrl}/movie/top_rated`)
+      .pipe(map((response) => response.results));
+  }
+
   getMovieById(movieId: string): Observable<DetailMovie> {
     return this.http
       .get<DetailMovie>(`${this.apiUrl}/movie/${movieId}`)

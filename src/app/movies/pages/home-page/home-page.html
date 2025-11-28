@@ -13,7 +13,9 @@
 
 @if (upcomingMoviesResource.hasValue() && upcomingMovies().length > 0) {
   <section class="px-[15px] sm:px-[30px] md:px-[60px] lg:px-[80px] xl:px-[90px]">
-    <app-movie-carousel [title]="'Upcoming'" [movies]="upcomingMovies()" />
+    <app-movie-carousel [title]="'En cines'" [movies]="mowPlayingMovies()" />
+    <app-movie-carousel [title]="'Popular'" [movies]="popularMovies()" />
+    <app-movie-carousel [title]="'Mejor valoradas'" [movies]="topRatedMovies()" />
   </section>
 } @else if (upcomingMoviesResource.isLoading()) {
   <section class="mt-8 px-[15px] sm:px-[30px] md:px-[60px] lg:px-[80px] xl:px-[90px]">

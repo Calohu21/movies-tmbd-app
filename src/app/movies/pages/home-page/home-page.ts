@@ -15,9 +15,24 @@ import { MoviesService } from '../../movies.service';
 export class HomePage {
   private readonly moviesService = inject(MoviesService);
 
+  readonly topRatedMovies = computed(() => this.topRatedMoviesResource.value() ?? []);
+  readonly popularMovies = computed(() => this.popularMoviesResource.value() ?? []);
+  readonly mowPlayingMovies = computed(() => this.nowPlayingMoviesResource.value() ?? []);
+  readonly upcomingMovies = computed(() => this.upcomingMoviesResource.value() ?? []);
+
   readonly upcomingMoviesResource = rxResource({
     stream: () => this.moviesService.getUpcomingMovies(),
   });
 
-  readonly upcomingMovies = computed(() => this.upcomingMoviesResource.value() ?? []);
+  readonly nowPlayingMoviesResource = rxResource({
+    stream: () => this.moviesService.getNowPlayingMovies(),
+  });
+
+  readonly popularMoviesResource = rxResource({
+    stream: () => this.moviesService.getPopularMovies(),
+  });
+
+  readonly topRatedMoviesResource = rxResource({
+    stream: () => this.moviesService.getTopRatedMovies(),
+  });
 }
