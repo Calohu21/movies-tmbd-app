@@ -5,11 +5,11 @@ import { Genre } from '../../core/models/movie.detail.interface';
   name: 'genres',
 })
 export class GenresPipe implements PipeTransform {
-  transform(genres: Genre[] | undefined): string {
+  transform(genres: Genre[] | undefined): Genre[] {
     if (!genres || genres.length === 0) {
-      return '';
+      return [];
     }
 
-    return genres.map((genre) => genre.name).join(', ');
+    return genres;
   }
 }

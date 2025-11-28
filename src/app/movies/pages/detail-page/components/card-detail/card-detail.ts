@@ -1,5 +1,5 @@
 import { Component, inject, input } from '@angular/core';
-import { DatePipe, NgOptimizedImage } from '@angular/common';
+import { DatePipe, DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { DetailMovie } from '../../../../../core/models/movie.detail.interface';
 import { RuntimePipe } from '../../../../../shared/pipes/runtime.pipe';
 import { GenresPipe } from '../../../../../shared/pipes/genres.pipe';
@@ -9,7 +9,15 @@ import { TmdbImagePipe } from '../../../../../shared/pipes/tmdb-image.pipe';
 
 @Component({
   selector: 'app-card-detail',
-  imports: [NgOptimizedImage, DatePipe, RuntimePipe, GenresPipe, MovieTrailer, TmdbImagePipe],
+  imports: [
+    NgOptimizedImage,
+    DatePipe,
+    RuntimePipe,
+    GenresPipe,
+    MovieTrailer,
+    TmdbImagePipe,
+    DecimalPipe,
+  ],
   templateUrl: './card-detail.html',
   styles: ``,
 })
