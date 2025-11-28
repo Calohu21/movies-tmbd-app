@@ -40,6 +40,7 @@ export class Hero implements OnDestroy {
   readonly previousIndex = signal<number>(-1);
   readonly slideDirection = signal<'next' | 'prev'>('next');
   readonly isTransitioning = signal<boolean>(false);
+  readonly moviesWithTrailer = signal<Set<number>>(new Set());
   readonly movies = computed<Movie[]>(() => {
     if (this.heroDataResource.error()) {
       return [];
@@ -49,6 +50,14 @@ export class Hero implements OnDestroy {
 
   readonly heroDataResource = rxResource({
     stream: () => this.movieService.getTrendingMovies(),
+  });
+
+  readonly currentMovieHasTrailer = computed<boolean>(() => {
+    const moviesList = this.movies();
+    const index = this.currentIndex();
+    if (moviesList.length === 0) return false;
+    const currentMovie = moviesList[index];
+    return currentMovie ? this.moviesWithTrailer().has(currentMovie.id) : false;
   });
 
   readonly prevIndex = computed<number>(() => {
@@ -75,6 +84,33 @@ export class Hero implements OnDestroy {
           if (!this.isPaused()) this.startAutoPlay();
         });
       }
+    });
+
+    effect(() => {
+      const moviesList = this.movies();
+      const index = this.currentIndex();
+      if (moviesList.length === 0) return;
+
+      const currentMovie = moviesList[index];
+      if (!currentMovie) return;
+
+      const hasTrailerCached = this.trailerService.hasTrailer(currentMovie.id);
+      if (hasTrailerCached !== undefined) return; // Already checked
+
+      untracked(() => {
+        this.movieService.getTrailerKeyForMovie(currentMovie.id).subscribe({
+          next: (trailerKey) => {
+            if (trailerKey) {
+              this.moviesWithTrailer.update((set) => {
+                const newSet = new Set(set);
+                newSet.add(currentMovie.id);
+                return newSet;
+              });
+            }
+          },
+          error: () => {},
+        });
+      });
     });
 
     destroyRef.onDestroy(() => {

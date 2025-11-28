@@ -14,7 +14,6 @@ export class TrailerService {
   readonly currentTrailerKey = signal<string | null>(null);
   readonly isLoadingTrailer = signal<boolean>(false);
 
-  // Cache to prevent re-fetching already loaded trailers
   private readonly trailerCache = new Map<number, string | null>();
 
   readonly safeTrailerUrl = computed<SafeResourceUrl | null>(() => {
@@ -44,17 +43,14 @@ export class TrailerService {
   }
 
   private loadTrailer(movieId: number): void {
-    // Check cache first
     const cached = this.trailerCache.get(movieId);
     if (cached !== undefined) {
       this.setTrailerKey(cached);
       return;
     }
 
-    // Set loading state
     this.isLoadingTrailer.set(true);
 
-    // Fetch on-demand using the optimized method
     this.moviesService.getTrailerKeyForMovie(movieId).subscribe({
       next: (trailerKey) => {
         this.trailerCache.set(movieId, trailerKey);
@@ -74,9 +70,12 @@ export class TrailerService {
     });
   }
 
-  /**
-   * Optional: Clear the trailer cache to free memory
-   */
+  hasTrailer(movieId: number): boolean | undefined {
+    const cached = this.trailerCache.get(movieId);
+    if (cached === undefined) return undefined; // Not checked yet
+    return cached !== null; // true if has trailer, false if null
+  }
+
   clearCache(): void {
     this.trailerCache.clear();
   }

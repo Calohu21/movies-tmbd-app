@@ -86,23 +86,25 @@
                   </span>
                 </div>
               </div>
-              <button class="h-9 sm:h-10 lg:h-12">
-                <div
-                  (click)="openTrailer(); $event.stopPropagation()"
-                  class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
-                  [class.opacity-50]="trailerService.isLoadingTrailer()"
-                  [class.pointer-events-none]="trailerService.isLoadingTrailer()"
-                >
-                  @if (trailerService.isLoadingTrailer()) {
-                    <i class="fa-solid fa-spinner fa-spin text-2xl sm:text-3xl lg:text-4xl"></i>
-                  } @else {
-                    <i class="fa-regular fa-circle-play text-2xl sm:text-3xl lg:text-4xl"></i>
-                  }
-                  <span class="font-bold text-base sm:text-lg lg:text-xl">
-                    Reproducir tráiler
-                  </span>
-                </div>
-              </button>
+              <div class="h-9 sm:h-10 lg:h-12">
+                @if (currentMovieHasTrailer()) {
+                  <div
+                    (click)="openTrailer(); $event.stopPropagation()"
+                    class="flex items-center gap-2 cursor-pointer transition-all duration-300 group-hover:text-yellow-500 origin-left group-hover:scale-105 w-fit"
+                    [class.opacity-50]="trailerService.isLoadingTrailer()"
+                    [class.pointer-events-none]="trailerService.isLoadingTrailer()"
+                  >
+                    @if (trailerService.isLoadingTrailer()) {
+                      <i class="fa-solid fa-spinner fa-spin text-2xl sm:text-3xl lg:text-4xl"></i>
+                    } @else {
+                      <i class="fa-regular fa-circle-play text-2xl sm:text-3xl lg:text-4xl"></i>
+                    }
+                    <span class="font-bold text-base sm:text-lg lg:text-xl">
+                      Reproducir tráiler
+                    </span>
+                  </div>
+                }
+              </div>
             </div>
           </div>
         </div>

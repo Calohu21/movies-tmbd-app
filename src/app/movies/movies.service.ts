@@ -27,28 +27,6 @@ export class MoviesService {
       .pipe(map((response) => response.results));
   }
 
-  getTrendingMovieWithTrailer(): Observable<MovieWithTrailer[]> {
-    return this.getTrendingMovies().pipe(
-      switchMap((movies) => {
-        if (!movies || movies.length === 0) {
-          throw new Error('No trending movies found');
-        }
-
-        const movieWithTrailerRequests: Observable<MovieWithTrailer>[] = movies.map((movie) =>
-          this.getMovieVideos(movie.id).pipe(
-            map((videos) => ({
-              movie,
-              trailerKey: this.findOfficialTrailerKey(videos),
-            })),
-            catchError(() => of({ movie, trailerKey: null })),
-          ),
-        );
-
-        return forkJoin(movieWithTrailerRequests);
-      }),
-    );
-  }
-
   findOfficialTrailerKey(videos: Video[]): string | null {
     const trailer =
       videos.find(
@@ -61,11 +39,6 @@ export class MoviesService {
     return trailer?.key ?? null;
   }
 
-  /**
-   * Fetches trailer key on-demand for a specific movie
-   * @param movieId - The ID of the movie
-   * @returns Observable<string | null> - The trailer key or null if not found
-   */
   getTrailerKeyForMovie(movieId: number): Observable<string | null> {
     return this.getMovieVideos(movieId).pipe(
       map((videos) => this.findOfficialTrailerKey(videos)),
